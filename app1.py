@@ -24,7 +24,7 @@ with open('case_material_encoder.pkl', 'rb') as file:
     case_material_encoder = pickle.load(file)
 
 with open('bracelet_material_encoder.pkl', 'rb') as file:
-    bracelet_material_encoder = pickle(file)
+    bracelet_material_encoder = pickle.load(file)
 
 with open('condition_mapper.pkl', 'rb') as file:
     condition_mapper = pickle.load(file)
