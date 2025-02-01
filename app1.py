@@ -29,15 +29,91 @@ with open('condition_mapper.pkl', 'rb') as file:
     condition_mapper = pickle.load(file)
 
 # Custom CSS 
+# Custom CSS 
 st.markdown("""
 <style>
-    .main {background: #fafafa;}
-    h1 {color: #1a237e; border-bottom: 2px solid #1a237e;}
-    .stSelectbox, .stNumberInput, .stSlider {padding: 10px; border-radius: 5px;}
-    .pred-box {padding: 20px; border-radius: 10px; margin: 15px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
-    .trusted {background: #e8f5e9; border: 2px solid #43a047;}
-    .not-trusted {background: #ffebee; border: 2px solid #e53935;}
-    .price-pred {background: #e3f2fd; border: 2px solid #1e88e5;}
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+    
+    * {
+        font-family: 'Inter', sans-serif;
+    }
+    
+    .main {
+        background: #f8fafc;
+        padding: 2rem;
+    }
+    
+    h1 {
+        color: #0f172a;
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 3px solid #3b82f6;
+        padding-bottom: 0.5rem;
+    }
+    
+    .pred-box {
+        padding: 2rem;
+        border-radius: 15px;
+        margin: 1.5rem 0;
+        transition: transform 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+    
+    .pred-box:hover {
+        transform: translateY(-3px);
+    }
+    
+    .price-pred {
+        background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        color: white;
+        border: none;
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.2);
+    }
+    
+    .trusted {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.2);
+    }
+    
+    .not-trusted {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.2);
+    }
+    
+    .pred-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 1rem 0;
+        letter-spacing: -1px;
+    }
+    
+    .confidence-badge {
+        background: rgba(255, 255, 255, 0.15);
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        display: inline-block;
+        margin-top: 1rem;
+    }
+    
+    .section-header {
+        font-size: 1.2rem;
+        color: #64748b;
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .stSelectbox, .stNumberInput, .stSlider {
+        border-radius: 10px !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+    }
+    
+    .st-b7 {
+        background: white !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -122,30 +198,56 @@ def main():
             price_pred = pt.inverse_transform(model_xgb.predict(input_df).reshape(-1, 1))[0][0]
             trust_prob = model_lr_t.predict_proba(input_df)[0][1]
             trust_status = model_lr_t.predict(input_df)[0]
-            
             # Display results
             st.subheader("Prediction Results")
-            
             col5, col6 = st.columns(2)
+
             with col5:
                 st.markdown(f"""
                 <div class="pred-box price-pred">
-                    <h3>Predicted Value</h3>
-                    <h2>${price_pred:,.2f}</h2>
-                    <p>Estimated market price</p>
+                    <div class="section-header">💎 VALUE ESTIMATE</div>
+                    <div class="pred-value">${price_pred:,.2f}</div>
+                    <div class="confidence-badge">Industry Benchmark Analysis</div>
                 </div>
                 """, unsafe_allow_html=True)
-                
+
             with col6:
-                status_class = "trusted" if trust_status == 1 else "not-trusted"
-                status_text = "Trusted Seller ✅" if trust_status == 1 else "Not Trusted ❌"
-                st.markdown(f"""
-                <div class="pred-box {status_class}">
-                    <h3>Seller Reliability</h3>
-                    <h2>{status_text}</h2>
-                    <p>Confidence: {trust_prob*100:.1f}%</p>
-                </div>
-                """, unsafe_allow_html=True)
+            status_class = "trusted" if trust_status == 1 else "not-trusted"
+            status_icon = "✅" if trust_status == 1 else "❌"
+            status_text = "CERTIFIED SELLER" if trust_status == 1 else "RISK ADVISORY"
+    
+            st.markdown(f"""
+            <div class="pred-box {status_class}">
+                <div class="section-header">🛡️ RELIABILITY STATUS</div>
+                <div style="font-size: 2rem; margin: 1rem 0">{status_icon}</div>
+                <div class="pred-value">{status_text}</div>
+                <div class="confidence-badge">Confidence Level: {trust_prob*100:.1f}%</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # # Display results
+            # st.subheader("Prediction Results")
+            
+            # col5, col6 = st.columns(2)
+            # with col5:
+            #     st.markdown(f"""
+            #     <div class="pred-box price-pred">
+            #         <h3>Predicted Value</h3>
+            #         <h2>${price_pred:,.2f}</h2>
+            #         <p>Estimated market price</p>
+            #     </div>
+            #     """, unsafe_allow_html=True)
+                
+            # with col6:
+            #     status_class = "trusted" if trust_status == 1 else "not-trusted"
+            #     status_text = "Trusted Seller ✅" if trust_status == 1 else "Not Trusted ❌"
+            #     st.markdown(f"""
+            #     <div class="pred-box {status_class}">
+            #         <h3>Seller Reliability</h3>
+            #         <h2>{status_text}</h2>
+            #         <p>Confidence: {trust_prob*100:.1f}%</p>
+            #     </div>
+            #     """, unsafe_allow_html=True)
         
         except Exception as e:
             st.error(f"Prediction Error: {str(e)}")
