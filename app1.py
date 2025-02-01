@@ -212,18 +212,18 @@ def main():
                 """, unsafe_allow_html=True)
 
             with col6:
-            status_class = "trusted" if trust_status == 1 else "not-trusted"
-            status_icon = "✅" if trust_status == 1 else "❌"
-            status_text = "CERTIFIED SELLER" if trust_status == 1 else "RISK ADVISORY"
+                status_class = "trusted" if trust_status == 1 else "not-trusted"
+                status_icon = "✅" if trust_status == 1 else "❌"
+                status_text = "CERTIFIED SELLER" if trust_status == 1 else "RISK ADVISORY"
     
-            st.markdown(f"""
-            <div class="pred-box {status_class}">
-                <div class="section-header">🛡️ RELIABILITY STATUS</div>
-                <div style="font-size: 2rem; margin: 1rem 0">{status_icon}</div>
-                <div class="pred-value">{status_text}</div>
-                <div class="confidence-badge">Confidence Level: {trust_prob*100:.1f}%</div>
-            </div>
-            """, unsafe_allow_html=True)
+                st.markdown(f"""
+                <div class="pred-box {status_class}">
+                    <div class="section-header">🛡️ RELIABILITY STATUS</div>
+                    <div style="font-size: 2rem; margin: 1rem 0">{status_icon}</div>
+                    <div class="pred-value">{status_text}</div>
+                    <div class="confidence-badge">Confidence Level: {trust_prob*100:.1f}%</div>
+                </div>
+                """, unsafe_allow_html=True)
             
             # # Display results
             # st.subheader("Prediction Results")
